@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=stunnel
+After=network.target
+
+[Service]
+Type=simple
+User={{ __stunnel_user }}
+Group={{ __stunnel_group }}
+ExecStart=/bin/stunnel
+
+SyslogIdentifier=stunnel
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

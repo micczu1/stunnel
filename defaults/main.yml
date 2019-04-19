@@ -1,0 +1,27 @@
+---
+# debug levels
+# emerg (0)
+# alert (1)
+# crit (2)
+# err (3)
+# warning (4)
+# notice (5)
+# info (6)
+# debug (7)
+
+debug_level: 3 # 0-7
+
+pid_location: /var/run/stunnel
+pid_file: stunnel.pid
+cafile_location: /etc/stunnel/tls
+ca_file: ca.crt
+
+log_location: /var/log/stunnel
+log_file: stunnel.log
+
+# [prometheus]
+# accept          = 0.0.0.0:9101
+# connect         = 127.0.0.1:9100
+# cert            = /etc/stunnel/tls/prom_node_exp.crt
+# key             = /etc/stunnel/tls/prom_node_exp_nopass.key
+# verify          = 2

@@ -1,0 +1,105 @@
+---
+- include: preflight.yml
+
+- name: Create the stunnel group
+  become: true
+  group:
+    name: "{{ __stunnel_group }}"
+    state: present
+    system: true
+
+- name: Create the stunnel user
+  become: true
+  user:
+    name: "{{ __stunnel_user }}"
+    groups: "{{ __stunnel_group  }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+    home: /
+
+- name: Create stunnel configuration directory
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: "{{ __stunnel_group  }}"
+    mode: 0770
+  with_items:
+    - "{{ sql_exporter_config_dir }}"
+
+
+- name: Install stunnel
+  become: true
+  package:
+    name: stunnel
+    state: present
+
+- name: Configure stunnel
+  become: true
+  template:
+    src: stunnel.conf.j2
+    dest: /etc/stunnel/stunnel.conf
+    force: true
+    owner: root
+    group: "{{ __stunnel_group }}"
+    mode: 0640
+  notify:
+    - restart stunnel
+
+- name: Create stunnel "{{ cafile_location }}" directory
+  become: true
+  file:
+    path: "{{ cafile_location }}"
+    state: directory
+    mode: 0750
+    owner: root
+    group: "{{ __stunnel_group }}"
+
+- name: Configure stunnel certs
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: "{{ cafile_location }}"
+    force: true
+    owner: root
+    group: "{{ __stunnel_group }}"
+    mode: 0750
+  with_files:
+   - ca.crt
+  notify:
+    - restart stunnel
+
+- name: Create stunnel log and pid directories
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: "{{ __stunnel_user }}"
+    group: "{{ __stunnel_group }}"
+  with_items:
+   - "{{ pid_location }}"
+   - "{{ log_location }}"
+
+  when: not ansible_check_mode
+- name: Copy the stunnel systemd service file
+  become: true
+  template:
+    src: stunnel.service.j2
+    dest: /etc/systemd/system/stunnel.service
+    owner: root
+    group: root
+    mode: 0644
+  no_log: true
+  notify:
+    - restart stunnel
+
+- name: Ensure stunnel is enabled on boot
+  become: true
+  systemd:
+    name: stunnel
+    state: started
+    enabled: true

@@ -1,0 +1,17 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+{{ ansible_managed | comment }}
+
+setuid          = {{ __stunnel_user }}
+setgid          = {{ __stunnel_group }}
+debug           = {{ debug_level }}
+pid             = {{ pid_location }}/{{ pid_file }}
+CAfile          = {{ cafile_location }}/{{ ca_file }}
+
+output          = {{ log_location }}/{{ log_file }}
+
+{# [prometheus]
+accept          = 0.0.0.0:9101
+connect         = 127.0.0.1:9100
+cert            = /etc/stunnel/tls/prom_node_exp.crt
+key             = /etc/stunnel/tls/prom_node_exp_nopass.key
+verify          = 2 #}

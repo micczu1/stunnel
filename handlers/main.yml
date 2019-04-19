@@ -1,0 +1,7 @@
+---
+- name: restart stunnel
+  become: true
+  systemd:
+    daemon_reload: true
+    name: stunnel
+    state: restarted
