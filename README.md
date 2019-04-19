@@ -38,7 +38,7 @@ Use it in a playbook as follows:
 ```
 
 ## Configuration notes
-[stunnel online documentation](https://www.stunnel.org/docs.html)
+[stunnel online documentation](https://www.stunnel.org/docs.html)  
 [stunnel configuration examples](https://www.stunnel.org/examples.html)
 
 ## License
