@@ -1,17 +1,26 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 {{ ansible_managed | comment }}
 
+## MAIN CONFIG
+
 setuid          = {{ __stunnel_user }}
 setgid          = {{ __stunnel_group }}
 debug           = {{ debug_level }}
 pid             = {{ pid_location }}/{{ pid_file }}
 CAfile          = {{ cafile_location }}/{{ ca_file }}
 
-output          = {{ log_location }}/{{ log_file }}
+output          = {{ log_location | default('/dev') }}/{{ log_file | default('null') }}
 
-{# [prometheus]
-accept          = 0.0.0.0:9101
-connect         = 127.0.0.1:9100
-cert            = /etc/stunnel/tls/prom_node_exp.crt
-key             = /etc/stunnel/tls/prom_node_exp_nopass.key
-verify          = 2 #}
+## JOBS
+
+{% if stunnel_jobs != {} %}
+{%   for item in stunnel_jobs %}
+[{{ item }}]
+accept          = {{ stunnel_jobs[item].accept }}
+connect         = {{ stunnel_jobs[item].connect }}
+cert            = {{ stunnel_jobs[item].cert }}
+key             = {{ stunnel_jobs[item].key }}
+verify          = {{ stunnel_jobs[item].verify }}
+
+{%   endfor %}
+{% endif %}

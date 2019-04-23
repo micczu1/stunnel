@@ -19,16 +19,16 @@
     createhome: false
     home: /
 
-- name: Create stunnel configuration directory
-  become: true
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: "{{ __stunnel_group  }}"
-    mode: 0770
-  with_items:
-    - "{{ sql_exporter_config_dir }}"
+# - name: Create stunnel configuration directory
+#   become: true
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#     owner: root
+#     group: "{{ __stunnel_group  }}"
+#     mode: 0770
+#   with_items:
+#     - "{{ stunnel_config_dir }}"
 
 
 - name: Install stunnel
@@ -61,18 +61,18 @@
 - name: Configure stunnel certs
   become: true
   copy:
-    src: "{{ item }}"
+    src: "certs/{{ item }}"
     dest: "{{ cafile_location }}"
     force: true
     owner: root
     group: "{{ __stunnel_group }}"
     mode: 0750
-  with_files:
+  with_items:
    - ca.crt
   notify:
     - restart stunnel
 
-- name: Create stunnel log and pid directories
+- name: Create stunnel pid directory
   become: true
   file:
     path: "{{ item }}"
@@ -82,9 +82,19 @@
     group: "{{ __stunnel_group }}"
   with_items:
    - "{{ pid_location }}"
-   - "{{ log_location }}"
 
-  when: not ansible_check_mode
+- name: Create stunnel log directory
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: "{{ __stunnel_user }}"
+    group: "{{ __stunnel_group }}"
+  with_items:
+   - "{{ log_location }}"
+  when: (not ansible_check_mode) and (log_location is defined)
+
 - name: Copy the stunnel systemd service file
   become: true
   template:
