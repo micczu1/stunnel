@@ -41,9 +41,7 @@ Use it in a playbook as follows:
 [stunnel online documentation](https://www.stunnel.org/docs.html)  
 [stunnel configuration examples](https://www.stunnel.org/examples.html)
 
-## License
-
-This project is licensed under GNU GPL License. See [LICENSE](/LICENSE) for more details.
+## Credits
 
 This role is inspired by https://github.com/cloudalchemy/ansible-mysqld-exporter  
 
