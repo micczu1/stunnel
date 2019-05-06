@@ -46,6 +46,7 @@ Use it in a playbook as follows:
 This project is licensed under GNU GPL License. See [LICENSE](/LICENSE) for more details.
 
 This role is inspired by https://github.com/cloudalchemy/ansible-mysqld-exporter  
+
 Stunnel is free software created by [Michał Trojnara](http://mike.mirt.net/).  
 Stunnel's website: https://www.stunnel.org/.  
 And this is only wrap-up in Ansible role.
